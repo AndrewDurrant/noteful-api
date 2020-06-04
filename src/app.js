@@ -3,8 +3,10 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
-
 const { NODE_ENV } = require('./config');
+const foldersRouter = require('./folders/folders-router');
+const notesRouter = require('./notes/notes-router');
+const validateBearerToken = require('./validate-bearer-token');
 
 const app = express();
 
@@ -20,17 +22,23 @@ app.get('/', (req, res) => {
   res.json({ message: 'Hello, World!' });
 });
 
-app.use((error, req, res, next) => { // eslint-disable-line no-unused-vars
-  let message; // eslint-disable-line no-unused-vars
-  if (NODE_ENV === 'production') {
-    message = 'Server error';
-  } else {
-    console.log(error);
-    message = error.message;
-  }
-  res.status(500).json({ error: error.message });
-});
+// authentication middleware
+app.use(validateBearerToken);
 
-// if no route matches, return 404 with HTML page - Express default route
+// endpoints middleware
+app.use('/api/notes', notesRouter);
+app.use('/api/folders', foldersRouter);
+
+// Error handler middleware
+app.use((error, req, res, next) => { 
+  let response;
+  if (NODE_ENV === 'production') {
+    response = {error: {message: 'server error'}};
+  } else {
+    console.error(error);
+    response = {message: error.message, error};
+  }
+  res.status(500).json(response);
+});
 
 module.exports = app;
