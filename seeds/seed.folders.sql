@@ -2,7 +2,7 @@ BEGIN;
 
 TRUNCATE folders, notes;
 
-INSERT INTO folders (folder_name)
+INSERT INTO folders (title)
 VALUES 
   ('Important'), 
   ('Educational'), 

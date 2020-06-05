@@ -7,9 +7,9 @@ const jsonBodyParser = express.json();
 
 const sanitize = item => ({
   id: item.id,
-  modified: item.modified,
-  folderid: item.folderid,
-  note_name: xss(item.note_name),
+  date_created: item.date_created,
+  folder_id: item.folder_id,
+  title: xss(item.title),
   content: xss(item.content)
 });
 
@@ -20,13 +20,13 @@ notesRouter
       .then(notes => res.json(notes.map(note => sanitize(note))));
   })
   .post(jsonBodyParser, (req, res, next) => {
-    const { note_name, content, folderid, modified } = req.body;
+    const { title, content, folder_id, date_created } = req.body;
 
     const newNote = {
-      note_name,
+      title,
       content,
-      folderid,
-      modified
+      folder_id,
+      date_created
     };
 
     for (const [key, value] of Object.entries(newNote))
@@ -76,8 +76,8 @@ notesRouter
       .catch(next);
   })
   .patch(jsonBodyParser, (req, res, next) => {
-    const { note_name, content, folderid } = req.body;
-    const noteToUpdate = { note_name, content, folderid };
+    const { title, content, folder_id } = req.body;
+    const noteToUpdate = { title, content, folder_id };
     const id = req.params.id;
 
     const numberOfValues = Object.values(noteToUpdate).filter(Boolean).length;
@@ -85,7 +85,7 @@ notesRouter
     if (numberOfValues === 0) {
       return res.status(400).json({
         error: {
-          message: 'Request body must contain \'note_name\', \'content\', and \'folderId\''
+          message: 'Request body must contain \'title\', \'content\', and \'folder_id\''
         }
       });
     }

@@ -7,7 +7,7 @@ const jsonBodyParser = express.json();
 
 const sanitize = item => ({
   id: item.id,
-  folder_name: xss(item.folder_name),
+  title: xss(item.title),
 });
 
 foldersRouter
@@ -17,14 +17,14 @@ foldersRouter
       .then(folders => res.json(folders.map(folder => sanitize(folder))));
   })
   .post(jsonBodyParser, (req, res, next) => {
-    const { folder_name } = req.body;
+    const { title } = req.body;
 
-    if (!folder_name) {
-      res.status(400).json({ error: 'A folder name is required' });
+    if (!title) {
+      res.status(400).json({ error: 'A folder title is required' });
     }
 
     const newFolder = {
-      folder_name
+      title
     };
 
     FoldersService.insertFolder(
@@ -70,8 +70,8 @@ foldersRouter
       });
   })
   .patch(jsonBodyParser, (req, res, next) => {
-    const { folder_name } = req.body;
-    const folderToUpdate = { folder_name };
+    const { title } = req.body;
+    const folderToUpdate = { title };
     const id = req.body.id;
 
     const numberOfValues = Object.values(folderToUpdate).filter(Boolean).length;
@@ -79,7 +79,7 @@ foldersRouter
     if (numberOfValues === 0) {
       return res.status(400).json({ 
         error: {
-          message: 'Request body must contain \'folder_name\''
+          message: 'Request body must contain \'title\''
         }
       });
     }
