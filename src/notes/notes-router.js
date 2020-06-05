@@ -20,13 +20,12 @@ notesRouter
       .then(notes => res.json(notes.map(note => sanitize(note))));
   })
   .post(jsonBodyParser, (req, res, next) => {
-    const { title, content, folder_id, date_created } = req.body;
+    const { title, content, folder_id } = req.body;
 
     const newNote = {
       title,
       content,
-      folder_id,
-      date_created
+      folder_id
     };
 
     for (const [key, value] of Object.entries(newNote))
