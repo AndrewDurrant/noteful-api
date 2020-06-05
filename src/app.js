@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 });
 
 // authentication middleware
-app.use(validateBearerToken);
+// app.use(validateBearerToken);
 
 // endpoints middleware
 app.use('/api/notes', notesRouter);

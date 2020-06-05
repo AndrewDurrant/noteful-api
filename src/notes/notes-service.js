@@ -1,5 +1,6 @@
 const noteService = {
   getAllNotes(db) {
+    console.log('line three!!!', db);
     return db('notes').select();
   },
   insertNote(db, newNote) {

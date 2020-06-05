@@ -2,15 +2,15 @@ const express = require('express');
 const xss = require('xss');
 const NotesService = require('./notes-service');
 
-const notesRouter = express.Router;
+const notesRouter = express.Router();
 const jsonBodyParser = express.json();
 
 const sanitize = item => ({
   id: item.id,
   modified: item.modified,
   folderid: item.folderid,
-  note_name: item.note_name,
-  content: item.content
+  note_name: xss(item.note_name),
+  content: xss(item.content)
 });
 
 notesRouter
